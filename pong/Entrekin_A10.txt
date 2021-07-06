@@ -1,0 +1,128 @@
+//Paddles
+leftPadX = 50;
+leftPadY = 400;
+rightPadX = 750;
+rightPadY = 400;
+
+//Ball variables 
+var ballX = 400;
+var ballY = 400;
+
+//Key booleans
+var leftUp = false;
+var leftDown = false;
+var rightUp = false;
+var rightDown = false;
+
+//Movement Variables 
+var speed = 2;
+var initialMove = 1;
+var xDirection = 1;
+var yDirection = 1;
+
+function setup() {
+	createCanvas(800, 800);
+	textSize(50);
+}
+
+function draw() {
+	background(150);
+
+	//paddles
+	fill(225);
+	rectMode(CENTER);
+	rect(leftPadX, leftPadY, 30, 100);
+	rect(rightPadX, rightPadY, 30, 100);
+
+	//conditonals for key controls
+	if(leftUp){
+		leftPadY -= 4;	
+	}
+	if(leftDown){
+		leftPadY += 4;
+	}
+	if(rightUp){
+		rightPadY -= 4;
+	}
+	if(rightDown){
+		rightPadY += 4;
+	}
+
+	//get ball moving in random direction
+	startMoving();
+
+	//draw the ball
+	ellipse(ballX, ballY, 50, 50);
+	//apply movement 
+	ballX += speed * xDirection;
+	ballY += speed * yDirection;
+
+	//boundary check left/right side of canvas
+	if(ballX > 825 || ballX < -25){
+		text("Game Over", 200, 400);
+	}
+	//when ball contects paddles
+	if(rightIntersect() < 50 || leftIntersect() < 50){
+		xDirection = -xDirection;
+	}
+	//boundary check for top/ bottom
+	if(ballY < 25 || ballY > height -25){
+		yDirection = -yDirection;
+	}
+
+	//constrain padles and ball 
+	ballX = constrain(ballX, -30, 830);
+	ballY = constrain(ballY, -30, 830);
+	leftPadY = constrain(leftPadY, 0, 800);
+	rightPadY = constrain(rightPadY, 0, 800);
+}
+
+function keyPressed(){
+	setMove(keyCode, true);
+}
+function keyReleased(){
+	setMove(keyCode, false);
+}
+
+function setMove(tempKey, tempB){
+	switch(tempKey){
+		case 87:
+			return leftUp = tempB;
+		case 83:
+			return leftDown = tempB;
+		case UP_ARROW:
+			return rightUp = tempB;
+		case DOWN_ARROW:
+			return rightDown = tempB;
+		default:
+			return tempB;
+
+	}
+
+}
+
+function startMoving(){
+	if(initialMove ==1){
+		var movement = random(0, 2);
+		if(movement > 1){
+			yDirection = -yDirection;
+			xDirection = -xDirection;	
+		}
+	initialMove++;
+	}
+}
+
+function rightIntersect(){
+	var dRight = dist(ballX, ballY, rightPadX, rightPadY);
+	return dRight;
+}
+function leftIntersect(){
+	var dLeft = dist(ballX, ballY, leftPadX, leftPadY);
+	return dLeft;
+}
+
+
+
+
+
+
